@@ -100,7 +100,7 @@ def build_path(spoiler_data):
 		pathsteps = spoiler_data['paths'].get(path)
 		stepnum = 0
 		entrance = pathsteps[0][1]
-		for i, step in enumerate(pathsteps):
+		for step in pathsteps:
 			exit = step[0]
 			if (not entrance in ignore_entrances and not exit in ignore_entrances) and path in paths_to_use:
 				stepnum += 1
@@ -183,14 +183,6 @@ ignore_locs = [
 ]
 
 always_include_locs = [
-	'Master Sword Pedestal',
-	'Purple Chest',
-	'Catfish',
-	'King Zora',
-	'Hobo',
-	'Library',
-
-
 ]
 
 ignore_items = [
