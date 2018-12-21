@@ -4,13 +4,15 @@ import sys
 # from collections import OrderedDict
 from itertools import islice
 
-f=open(sys.argv[1], "r")
+file_to_open="rom/spoiler_log.txt"
+
+f=open(file_to_open, "r")
 
 spoiler_data = json.loads(f.read())
 
 with open('csv/entrances.csv', mode='w') as entrance_file:
 	fieldnames = ['entrance', 'exit','direction']
-	entrance_writer = csv.DictWriter(entrance_file, fieldnames=fieldnames)
+	entrance_writer = csv.DictWriter(entrance_file, fieldnames=fieldnames, lineterminator='\n')
 	entrance_writer.writeheader()
 	for entrance in spoiler_data['Entrances']:
 		entrance_writer.writerow(entrance)
@@ -95,7 +97,6 @@ def build_path(spoiler_data):
 	dict = {}
 	paths_to_use = paths_to_export(spoiler_data)
 	for path in spoiler_data['paths']:
-		print(path)
 		patharr = []
 		pathsteps = spoiler_data['paths'].get(path)
 		stepnum = 0
@@ -128,15 +129,13 @@ def build_path(spoiler_data):
 
 with open('csv/paths.csv', mode='w') as path_file:
 	fieldnames = ['path','entrance1','exit1','step1','entrance2','exit2','step2','steptotal']
-	path_writer = csv.writer(path_file)
+	path_writer = csv.writer(path_file, lineterminator='\n')
 	path_writer.writerow(fieldnames)
 	pathset = build_path(spoiler_data)
 	for pathname in pathset:
 		i = 0
-		print(pathname)
 		path = pathset.get(pathname)
 		while i < len(path):
-			print(i)
 			entrance1 = path[i]['entrance']
 			exit1 = path[i]['exit']
 			step1 = path[i]['step']
@@ -222,7 +221,7 @@ ignore_items = [
 
 with open('csv/items.csv', mode='w') as item_file:
 	fieldnames = ['region','location','item']
-	item_writer = csv.writer(item_file)
+	item_writer = csv.writer(item_file, lineterminator='\n')
 	item_writer.writerow(['region','location','item'])
 	for region in regions:
 		for loc in spoiler_data[region]:
@@ -238,9 +237,12 @@ ignore_dungeons = [
 
 with open('csv/bosses.csv', mode='w') as item_file:
 	fieldnames = ['dungeon','boss']
-	item_writer = csv.writer(item_file)
+	item_writer = csv.writer(item_file, lineterminator='\n')
 	item_writer.writerow(['dungeon','boss'])
-	for dungeon in spoiler_data['Bosses']:
-		boss = spoiler_data['Bosses'].get(dungeon)
-		if not dungeon in ignore_dungeons:
-			item_writer.writerow([dungeon,boss])
+	try:
+		for dungeon in spoiler_data['Bosses']:
+			boss = spoiler_data['Bosses'].get(dungeon)
+			if not dungeon in ignore_dungeons:
+				item_writer.writerow([dungeon,boss])
+	except KeyError:
+		pass
